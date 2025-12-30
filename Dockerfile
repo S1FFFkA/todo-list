@@ -1,4 +1,14 @@
-FROM ubuntu:latest
-LABEL authors="Глеб"
+FROM golang:1.25-alpine
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+COPY go.mod ./
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o todo-list ./cmd/main.go
+
+EXPOSE 8080
+
+CMD ["./todo-list"]
